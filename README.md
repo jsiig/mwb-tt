@@ -8,8 +8,10 @@ I answered ES6 questions in Markdown.
 `/es6-questions/q${n}.md` - variable n is question no.
 
 ## Vue app
-* Using no dependencies other than vue itself (but still with build tools)
-* Any commands provided here are for Linux/BSD/Mac (bash and compatible shells)
+* Using NO dependencies other than vue itself - taking that VanillaJS and no frameworks 
+requirement seriously
+* Going to extreme lengths to avoid dependencies - only Vue and build tools and fonts+icons
+* (Still includes ionicons + google fonts via cdn - needs to look nice)
 
 ### Running:
 ```bash
@@ -26,10 +28,19 @@ yarn run build
 ```
 
 
-### Things I'm doing differently here from how I'd normally approach things
-* Not using vuex because avoiding any dependencies and because this 
- is a tiny app that doesn't really need it
-* Would normally use axios library for api calls (but avoiding dependencies here,
- also not necessary for simple get calls - fetch is just fine)
-* Would normally use lodash or similar for debouncing scroll actions 
-(or a pre-made infinite scroll library)
+### Normally I would...
+* ...use vuex for data management
+* ...use axios library for api calls (though not for something as basic as this)
+* ...use lodash or similar for debouncing (not write my own)
+* ...(probably) use a pre-made infinite scroll library
+* ...use fewer CSS hacks, e.g. table header shadow
+* ...use something like Bloodhound.js for searching on the client side __OR__
+* ...do most of the search, filtering, etc. logic on the server side using
+purpose-built tools
+
+### Usually I already...
+* write my own SCSS from scratch
+* follow the same general Vue approaches (component composition) - however using 
+`vuex` would reduce the size and complexity of the main components considerably and
+allow for easier composition, as much of the logic would reside on that side
+

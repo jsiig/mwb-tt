@@ -11,9 +11,9 @@
     </div>
 
     <Table class="gallery-table">
-      <TableHeader class="gallery-table__header">
+      <thead class="gallery-table__header">
         <TableRow>
-          <TableHeading>
+          <TableHeading class="gallery-table__album-id">
             Album ID
             <SortButton @toggleSorting="toggleSorting" :sorting="query.sorting" column="albumId"></SortButton>
           </TableHeading>
@@ -21,18 +21,18 @@
           <TableHeading>
             Album Title
             <SortButton @toggleSorting="toggleSorting" :sorting="query.sorting" column="albumTitle"></SortButton>
-            <input type="text" v-model="query.search['albumTitle']">
+            <SearchBox type="text" v-model="query.search.albumTitle" />
           </TableHeading>
 
           <TableHeading>
             Photo Title
             <SortButton @toggleSorting="toggleSorting" :sorting="query.sorting" column="title"></SortButton>
-            <input type="text" v-model="query.search['title']">
+            <SearchBox type="text" v-model="query.search.title" />
           </TableHeading>
 
-          <TableHeading>Thumbnail</TableHeading>
+          <TableHeading class="gallery-table__thumbnail">Thumbnail</TableHeading>
         </TableRow>
-      </TableHeader>
+      </thead>
 
       <TableBody class="gallery-table__body">
         <TableRow v-for="(photo) in displayablePhotos" :key="photo.id">
@@ -51,7 +51,6 @@
 
 <script>
 import Table from './lib/Table'
-import TableHeader from './lib/TableHeader'
 import TableBody from './lib/TableBody'
 import TableCell from './lib/TableCell'
 import TableRow from './lib/TableRow'
@@ -61,6 +60,7 @@ import Thumbnail from './lib/Thumbnail'
 import FilterListItem from './lib/FilterListItem'
 import FilterList from './lib/FilterList'
 import SortButton from './lib/SortButton'
+import SearchBox from './lib/SearchBox'
 
 import debounce from '../lib/debounce'
 
@@ -86,7 +86,6 @@ export default {
 
   components: {
     Table,
-    TableHeader,
     TableBody,
     TableCell,
     TableRow,
@@ -94,7 +93,8 @@ export default {
     Thumbnail,
     FilterListItem,
     FilterList,
-    SortButton
+    SortButton,
+    SearchBox
   },
 
   props: {
@@ -106,8 +106,7 @@ export default {
 
   data () {
     return {
-      debouncedScrollHandler: debounce(this.scrollHandler),
-      displayablePhotos: [],
+      displayableAllPhotos: [],
       query: {
         limit: INITIAL_COUNT,
         filters: [],
@@ -118,12 +117,17 @@ export default {
           albumTitle: '',
           title: ''
         }
-      }
+      },
+      // Not the correct way of doing things, but works (methods inside `data()`)
+      debouncedScrollHandler: debounce(this.scrollHandler),
+      debouncedSetPhotos: debounce(this.setPhotos, 100)
     }
   },
 
   computed: {
-
+    displayablePhotos () {
+      return this.limit(this.displayableAllPhotos)
+    }
   },
 
   created () {
@@ -134,16 +138,24 @@ export default {
     window.removeEventListener('scroll', this.debouncedScrollHandler)
   },
 
+  mounted () {
+    this.setPhotos()
+  },
+
   methods: {
     setPhotos () {
+      // Work with a copy of prop value
       let photos = this.photos.slice()
       const { query } = this
-      console.log(photos)
 
+      // Only run search action when we can filter something
       if (Object.values(query.search).some(searchQuery => searchQuery.trim().length)) {
         photos = this.search(photos)
       }
 
+      // Only sort if these are not defaults already
+      // This is sort of iffy, should the response from the
+      // API change at any point
       if (
         query.sorting.column !== SORTING_DEFAULTS.column ||
         query.sorting.direction !== SORTING_DEFAULTS.direction
@@ -151,9 +163,8 @@ export default {
         photos = this.sort(photos)
       }
 
-      photos = this.limit(photos)
-
-      this.displayablePhotos = photos
+      this.displayableAllPhotos = photos
+      this.resetSize()
     },
 
     limit (photos) {
@@ -207,7 +218,7 @@ export default {
 
       if (
         documentHeight - scrolledHeightBottom < BOTTOM_SCROLL_OFFSET &&
-        this.displayablePhotos.length
+        this.displayableAllPhotos.length
       ) {
         this.loadMore()
       }
@@ -215,7 +226,6 @@ export default {
 
     loadMore () {
       this.query.limit += LOAD_MORE_COUNT
-      this.setPhotos()
     },
 
     resetSize () {
@@ -224,8 +234,6 @@ export default {
     },
 
     toggleSorting (column) {
-      this.resetSize()
-
       const { sorting } = this.query
 
       if (sorting.column !== column) {
@@ -239,21 +247,17 @@ export default {
     }
   },
 
-  mounted () {
-    this.setPhotos()
-  },
-
   watch: {
     photos (newValue) {
       if (newValue.length) this.setPhotos()
     },
+
     'query.search.title' (newValue) {
-      // Update results from 2 characters
-      if (newValue.trim().length > 1) this.setPhotos()
+      this.debouncedSetPhotos()
     },
+
     'query.search.albumTitle' (newValue) {
-      // Update results from 2 characters
-      if (newValue.trim().length > 1) this.setPhotos()
+      this.debouncedSetPhotos()
     }
   }
 }
@@ -275,6 +279,10 @@ export default {
       position: sticky;
       top: 0;
       z-index: 3;
+    }
+
+    &__album-id {
+      min-width: 150px;
     }
   }
 </style>

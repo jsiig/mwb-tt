@@ -20,5 +20,6 @@ export default {
     text-align: left;
     border-collapse: collapse;
     position: relative;
+    font-size: $body-font-size;
   }
 </style>

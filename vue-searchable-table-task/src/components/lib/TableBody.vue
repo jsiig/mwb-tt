@@ -1,7 +1,7 @@
 <template>
-  <transition-group name="table-body" class="table-body" tag="tbody">
+  <tbody class="table-body">
     <slot></slot>
-  </transition-group>
+  </tbody>
 </template>
 
 <script>
@@ -13,8 +13,6 @@ export default {
 <style lang="scss">
 .table-body {
   > tr {
-    opacity: 1;
-    transition: opacity 1s;
     overflow-y: hidden;
     max-height: 1000px;
 
@@ -22,10 +20,5 @@ export default {
       background-color: rgba($black, 0.03);
     }
   }
-}
-
-.table-body-enter, .table-body-leave-to {
-  opacity: 0;
-  max-height: 0;
 }
 </style>
