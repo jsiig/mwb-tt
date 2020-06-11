@@ -1,11 +1,14 @@
 <template>
   <div id="app">
+    <PageTitle>Gallery Table</PageTitle>
     <div v-if="error">{{error}}</div>
   </div>
 </template>
 
 <script>
 import api from './lib/api'
+
+import PageTitle from './components/lib/PageTitle'
 
 export default {
   name: 'App',
@@ -18,7 +21,9 @@ export default {
     }
   },
 
-  components: {},
+  components: {
+    PageTitle
+  },
 
   methods: {
     async fetchData () {
