@@ -7,4 +7,5 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
+Vue.config.ignoredElements = [/^ion-/] // Allow ionicons
 Vue.config.devtools = true // Enable devtools on production
