@@ -17,6 +17,10 @@ export default {
     transition: opacity 1s;
     overflow-y: hidden;
     max-height: 1000px;
+
+    &:nth-child(2n) {
+      background-color: rgba($black, 0.03);
+    }
   }
 }
 

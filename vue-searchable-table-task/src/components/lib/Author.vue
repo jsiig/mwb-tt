@@ -1,6 +1,6 @@
 <template>
   <div class="author">
-    <h6>For MalwareBytes</h6>
+    <h6>For Malwarebytes</h6>
     <h5>By <a href="mailto:joanna@siig.ee">Joanna Siig</a></h5>
   </div>
 </template>

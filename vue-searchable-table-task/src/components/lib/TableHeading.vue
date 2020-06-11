@@ -17,13 +17,14 @@ export default {
     // https://caniuse.com/#feat=css-sticky
     // Blink, Webkit, Firefox only - would need to figure something out for old and alternative browsers
     position: sticky;
-    top: 0;
+    top: 100px;
     margin: 0;
     padding: 0;
     background-color: $white;
 
     // Render box shadow for entire row
-    // Quick hack to make it work with position: sticky
+    // Quick hack to make box shadow around thead work with position: sticky
+    // Depends on the table being full width
     &:first-of-type {
       &:before {
         width: calc(100vw - #{2 * $site-padding-horizontal});
@@ -40,6 +41,6 @@ export default {
   .th-inner {
     padding: 8px;
     width: 100%;
-    border-bottom: 1px solid rgba($black, 0.25);
+    height: 100%;
   }
 </style>
