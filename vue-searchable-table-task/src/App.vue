@@ -42,6 +42,8 @@ html, body {
   margin: 0;
   width: 100%;
   height: 100%;
+  font-family: 'Raleway', Helvetica, Arial, sans-serif;
+  background: $primary-color linear-gradient(135deg, $primary-color, $primary-color-alt);
 
   &, * {
     box-sizing: border-box;
@@ -51,5 +53,7 @@ html, body {
 #app {
   width: 100%;
   height: 100%;
+  padding: 2vh 2vw;
+  margin: 0;
 }
 </style>
