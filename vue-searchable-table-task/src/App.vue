@@ -7,7 +7,7 @@
     <section class="app__main">
       <transition name="main-screen" mode="out-in">
         <LoadingScreen v-if="loading"></LoadingScreen>
-        <GalleryTable v-else-if="!loading && !error" :albums="albums" :photos="photos" />
+        <GalleryTable v-else-if="!loading && !error" :photos="photosJoinAlbums" />
         <ErrorScreen @retry="fetchData" v-else>{{error}}</ErrorScreen>
       </transition>
     </section>
@@ -42,6 +42,22 @@ export default {
     GalleryTable,
     LoadingScreen,
     ErrorScreen
+  },
+
+  computed: {
+    photosJoinAlbums () {
+      if (!this.photos.length || !this.albums.length) return []
+
+      return this.photos.map(photo => {
+        const album = this.albums.find(album => album.id === photo.albumId)
+
+        return {
+          ...photo,
+          albumTitle: album.title,
+          albumId: album.id
+        }
+      })
+    }
   },
 
   methods: {

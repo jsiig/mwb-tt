@@ -3,7 +3,7 @@
     <div class="gallery-table__filter-area">
       Filters:
       <FilterList>
-        <FilterListItem v-for="(filter, index) in filters"
+        <FilterListItem v-for="(filter, index) in query.filters"
           :key="index"
           :filter="filter"
           @remove="removeFilter(index)"/>
@@ -15,19 +15,19 @@
         <TableRow>
           <TableHeading>
             Album ID
-            <SortButton @toggleSorting="toggleSorting" :sorting="sorting" column="albumId"></SortButton>
+            <SortButton @toggleSorting="toggleSorting" :sorting="query.sorting" column="albumId"></SortButton>
           </TableHeading>
 
           <TableHeading>
             Album Title
-            <SortButton @toggleSorting="toggleSorting" :sorting="sorting" column="albumTitle"></SortButton>
-            <input type="text" v-model="search['albumTitle']">
+            <SortButton @toggleSorting="toggleSorting" :sorting="query.sorting" column="albumTitle"></SortButton>
+            <input type="text" v-model="query.search['albumTitle']">
           </TableHeading>
 
           <TableHeading>
             Photo Title
-            <SortButton @toggleSorting="toggleSorting" :sorting="sorting" column="title"></SortButton>
-            <input type="text" v-model="search['title']">
+            <SortButton @toggleSorting="toggleSorting" :sorting="query.sorting" column="title"></SortButton>
+            <input type="text" v-model="query.search['title']">
           </TableHeading>
 
           <TableHeading>Thumbnail</TableHeading>
@@ -35,7 +35,7 @@
       </TableHeader>
 
       <TableBody class="gallery-table__body">
-        <TableRow v-for="(photo) in photosWithAlbumsLimited" :key="photo.id">
+        <TableRow v-for="(photo) in displayablePhotos" :key="photo.id">
           <TableCell>{{photo.albumId}}</TableCell>
 
           <TableCell>{{photo.albumTitle}}</TableCell>
@@ -98,11 +98,6 @@ export default {
   },
 
   props: {
-    albums: {
-      type: Array,
-      required: true
-    },
-
     photos: {
       type: Array,
       required: true
@@ -112,71 +107,23 @@ export default {
   data () {
     return {
       debouncedScrollHandler: debounce(this.scrollHandler),
-      limit: INITIAL_COUNT,
-      filters: [],
-      sorting: {
-        ...SORTING_DEFAULTS
-      },
-      search: {
-        albumTitle: '',
-        title: ''
+      displayablePhotos: [],
+      query: {
+        limit: INITIAL_COUNT,
+        filters: [],
+        sorting: {
+          ...SORTING_DEFAULTS
+        },
+        search: {
+          albumTitle: '',
+          title: ''
+        }
       }
     }
   },
 
   computed: {
-    photosWithAlbumsLimited () {
-      return this.photosSorted.slice(0, this.limit)
-    },
 
-    photosSearched () {
-      let photos = this.photosWithAlbums.slice()
-
-      Object.keys(this.search).forEach(key => {
-        const term = this.search[key].trim().toLowerCase()
-
-        if (term.length) {
-          photos = photos.filter(photo => {
-            return photo[key].trim().toLowerCase().includes(term)
-          })
-        }
-      })
-
-      return photos
-    },
-
-    photosSorted () {
-      const { column, direction } = this.sorting
-
-      // Defaults check - optimising for performance on load - sorting this way isn't really the most efficient
-      if (column === SORTING_DEFAULTS.column && direction === SORTING_DEFAULTS.direction) {
-        return this.photosSearched.slice()
-      }
-      console.log('resorting!')
-
-      return this.photosSearched.slice().sort((a, b) => {
-        const flip = direction === ASC
-
-        let result = 0
-
-        if (a[column] < b[column]) result = 1
-        else if (a[column] > b[column]) result = -1
-
-        return flip ? result * -1 : result
-      })
-    },
-
-    photosWithAlbums () {
-      return this.photos.map(photo => {
-        const album = this.albums.find(album => album.id === photo.albumId)
-
-        return {
-          ...photo,
-          albumTitle: album.title,
-          albumId: album.id
-        }
-      })
-    }
   },
 
   created () {
@@ -188,6 +135,60 @@ export default {
   },
 
   methods: {
+    setPhotos () {
+      let photos = this.photos.slice()
+      const { query } = this
+      console.log(photos)
+
+      if (Object.values(query.search).some(searchQuery => searchQuery.trim().length)) {
+        photos = this.search(photos)
+      }
+
+      if (
+        query.sorting.column !== SORTING_DEFAULTS.column ||
+        query.sorting.direction !== SORTING_DEFAULTS.direction
+      ) {
+        photos = this.sort(photos)
+      }
+
+      photos = this.limit(photos)
+
+      this.displayablePhotos = photos
+    },
+
+    limit (photos) {
+      return photos.slice(0, this.query.limit)
+    },
+
+    search (photos) {
+      Object.keys(this.query.search).forEach(key => {
+        const term = this.query.search[key].trim().toLowerCase()
+
+        if (term.length) {
+          photos = photos.filter(photo => {
+            return photo[key].trim().toLowerCase().includes(term)
+          })
+        }
+      })
+
+      return photos
+    },
+
+    sort (photos) {
+      const { column, direction } = this.query.sorting
+
+      return photos.slice().sort((a, b) => {
+        const flip = direction === ASC
+
+        let result = 0
+
+        if (a[column] < b[column]) result = 1
+        else if (a[column] > b[column]) result = -1
+
+        return flip ? result * -1 : result
+      })
+    },
+
     scrollHandler (event) {
       console.log(event)
       const { body, documentElement } = document
@@ -206,30 +207,53 @@ export default {
 
       if (
         documentHeight - scrolledHeightBottom < BOTTOM_SCROLL_OFFSET &&
-        this.photosWithAlbumsLimited.length
+        this.displayablePhotos.length
       ) {
         this.loadMore()
       }
     },
 
     loadMore () {
-      this.limit += LOAD_MORE_COUNT
+      this.query.limit += LOAD_MORE_COUNT
+      this.setPhotos()
     },
 
     resetSize () {
       document.body.scrollTop = 0
-      this.limit = INITIAL_COUNT
+      this.query.limit = INITIAL_COUNT
     },
 
     toggleSorting (column) {
       this.resetSize()
 
-      if (this.sorting.column !== column) {
-        this.sorting.direction = ASC
-        this.sorting.column = column
+      const { sorting } = this.query
+
+      if (sorting.column !== column) {
+        sorting.direction = ASC
+        sorting.column = column
       } else {
-        this.sorting.direction = this.sorting.direction === ASC ? DSC : ASC
+        sorting.direction = sorting.direction === ASC ? DSC : ASC
       }
+
+      this.setPhotos()
+    }
+  },
+
+  mounted () {
+    this.setPhotos()
+  },
+
+  watch: {
+    photos (newValue) {
+      if (newValue.length) this.setPhotos()
+    },
+    'query.search.title' (newValue) {
+      // Update results from 2 characters
+      if (newValue.trim().length > 1) this.setPhotos()
+    },
+    'query.search.albumTitle' (newValue) {
+      // Update results from 2 characters
+      if (newValue.trim().length > 1) this.setPhotos()
     }
   }
 }
