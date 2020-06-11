@@ -4,10 +4,18 @@ $primary-color-alt: #0080C8;
 $white: #FFF;
 $black: #000;
 
-// Font weights
+$error-color: darken($primary-color-alt, 10%);
+
+// Fonts
+$font-family: 'Raleway', Helvetica, Arial, sans-serif;
 $font-weight-bold: 900;
 $font-weight-regular: 600;
 $font-weight-light: 200;
-
-// Font sizes
 $page-title-size: 48px;
+
+// Paddings
+$site-padding-horizontal: 3vw;
+$site-padding-vertical: 3vw;
+
+// Shadows
+$site-shadow: 2px 2px 8px 2px rgba($black, 0.25);

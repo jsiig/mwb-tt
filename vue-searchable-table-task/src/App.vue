@@ -1,8 +1,16 @@
 <template>
   <div id="app" class="app">
-    <PageTitle class="app__header">Gallery Table</PageTitle>
-    <GalleryTable v-if="!error" class="app__main" :albums="albums" :photos="photos" />
-    <div class="app__main" v-else>{{error}}</div>
+    <header class="app__header">
+      <PageTitle>Gallery Table</PageTitle>
+      <Author />
+    </header>
+    <section class="app__main">
+      <transition name="main-screen" mode="out-in">
+        <LoadingScreen v-if="loading"></LoadingScreen>
+        <GalleryTable v-else-if="!loading && !error" :albums="albums" :photos="photos" />
+        <ErrorScreen @retry="fetchData" v-else>{{error}}</ErrorScreen>
+      </transition>
+    </section>
   </div>
 </template>
 
@@ -10,7 +18,12 @@
 import api from './lib/api'
 
 import PageTitle from './components/lib/PageTitle'
+import Author from './components/lib/Author'
+
+import LoadingScreen from './components/LoadingScreen'
+import ErrorScreen from './components/ErrorScreen'
 import GalleryTable from './components/GalleryTable'
+
 export default {
   name: 'App',
 
@@ -18,22 +31,29 @@ export default {
     return {
       albums: [],
       photos: [],
-      error: null
+      error: null,
+      loading: true
     }
   },
 
   components: {
     PageTitle,
-    GalleryTable
+    Author,
+    GalleryTable,
+    LoadingScreen,
+    ErrorScreen
   },
 
   methods: {
     async fetchData () {
+      this.loading = true
       try {
         this.albums = await api.albums()
         this.photos = await api.photos()
       } catch (e) {
         this.error = 'Something went a bit wrong with the request.'
+      } finally {
+        this.loading = false
       }
     }
   },
@@ -50,8 +70,8 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  font-family: 'Raleway', Helvetica, Arial, sans-serif;
-  background: $primary-color linear-gradient(135deg, $primary-color, $primary-color-alt);
+  font-family: $font-family;
+  background: $primary-color linear-gradient(135deg, $primary-color, $primary-color-alt) fixed;
 
   &, * {
     box-sizing: border-box;
@@ -62,12 +82,28 @@ html, body {
   width: 100%;
   height: 100%;
   max-height: 100%;
-  padding: 3vh 3vw;
+  padding: $site-padding-vertical $site-padding-horizontal;
   margin: 0;
   display: flex;
   flex-flow: column nowrap;
 
-  &__header { flex: 0 0 auto; }
+  &__header {
+    flex: 0 0 auto;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
   &__main { flex: 1 0 auto; }
+}
+
+.main-screen {
+  &-enter-active, &-leave-active {
+    transition-delay: 1s;
+    transition: opacity .4s;
+  }
+
+  &-enter, &-leave-to {
+    opacity: 0;
+  }
 }
 </style>

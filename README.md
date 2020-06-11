@@ -14,14 +14,14 @@ I answered ES6 questions in Markdown.
 ### Running:
 ```bash
 cd vue-searchable-table-task
-yarn
+yarn install
 yarn run serve
 ```
 
 ### Building for production:
 ```bash
 cd vue-searchable-table-task
-yarn
+yarn install
 yarn run build
 ```
 
@@ -30,4 +30,6 @@ yarn run build
 * Not using vuex because avoiding any dependencies and because this 
  is a tiny app that doesn't really need it
 * Would normally use axios library for api calls (but avoiding dependencies here,
- also not necessary for simple get calls)
+ also not necessary for simple get calls - fetch is just fine)
+* Would normally use lodash or similar for debouncing scroll actions 
+(or a pre-made infinite scroll library)

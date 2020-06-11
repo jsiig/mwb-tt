@@ -18,7 +18,6 @@ export default {
     // Blink, Webkit, Firefox only - would need to figure something out for old and alternative browsers
     position: sticky;
     top: 0;
-
     margin: 0;
     padding: 0;
     background-color: $white;
