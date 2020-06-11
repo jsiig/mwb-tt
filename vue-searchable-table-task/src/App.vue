@@ -1,7 +1,8 @@
 <template>
-  <div id="app">
-    <PageTitle>Gallery Table</PageTitle>
-    <div v-if="error">{{error}}</div>
+  <div id="app" class="app">
+    <PageTitle class="app__header">Gallery Table</PageTitle>
+    <GalleryTable v-if="!error" class="app__main" :albums="albums" :photos="photos" />
+    <div class="app__main" v-else>{{error}}</div>
   </div>
 </template>
 
@@ -9,7 +10,7 @@
 import api from './lib/api'
 
 import PageTitle from './components/lib/PageTitle'
-
+import GalleryTable from './components/GalleryTable'
 export default {
   name: 'App',
 
@@ -22,7 +23,8 @@ export default {
   },
 
   components: {
-    PageTitle
+    PageTitle,
+    GalleryTable
   },
 
   methods: {
@@ -45,6 +47,7 @@ export default {
 <style lang="scss">
 html, body {
   margin: 0;
+  padding: 0;
   width: 100%;
   height: 100%;
   font-family: 'Raleway', Helvetica, Arial, sans-serif;
@@ -55,10 +58,16 @@ html, body {
   }
 }
 
-#app {
+.app {
   width: 100%;
   height: 100%;
-  padding: 2vh 2vw;
+  max-height: 100%;
+  padding: 3vh 3vw;
   margin: 0;
+  display: flex;
+  flex-flow: column nowrap;
+
+  &__header { flex: 0 0 auto; }
+  &__main { flex: 1 0 auto; }
 }
 </style>
