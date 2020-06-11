@@ -1,11 +1,39 @@
 <template>
-  <div id="app"></div>
+  <div id="app">
+    <div v-if="error">{{error}}</div>
+  </div>
 </template>
 
 <script>
+import api from './lib/api'
+
 export default {
   name: 'App',
-  components: {}
+
+  data () {
+    return {
+      albums: [],
+      photos: [],
+      error: null
+    }
+  },
+
+  components: {},
+
+  methods: {
+    async fetchData () {
+      try {
+        this.albums = await api.albums()
+        this.photos = await api.photos()
+      } catch (e) {
+        this.error = 'Something went a bit wrong with the request.'
+      }
+    }
+  },
+
+  async mounted () {
+    this.fetchData()
+  }
 }
 </script>
 
