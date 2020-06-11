@@ -16,5 +16,9 @@ export default {
     margin: 0;
     padding: 0;
     border: none;
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    position: relative;
   }
 </style>
