@@ -326,7 +326,7 @@ export default {
       height: 100%;
       background: $white;
       padding-bottom: 80px;
-      box-shadow: 2px 2px 8px 2px rgba($black, 0.2);
+      box-shadow: $site-shadow;
     }
 
     &__filter-area {

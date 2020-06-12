@@ -40,7 +40,7 @@ export default {
     opacity: 1;
     border: 1px solid rgba($black, 0.1);
     transition: opacity 0.25s ease-in-out;
-    box-shadow: 2px 2px 4px 0px rgba($black, 0.25);
+    box-shadow: $small-shadow;
 
     &:hover {
       opacity: 0;

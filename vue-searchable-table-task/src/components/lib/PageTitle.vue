@@ -10,7 +10,7 @@ export default {
 
 <style lang="scss" scoped>
   h1 {
-    text-shadow: 2px 2px 2px rgba($black, 0.2);
+    text-shadow: $text-shadow;
     font-size: $page-title-size;
     font-weight: $font-weight-bold;
     color: $white;

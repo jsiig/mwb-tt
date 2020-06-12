@@ -51,7 +51,7 @@ export default {
       justify-content: center;
       flex-flow: row nowrap;
       padding: 8px 16px;
-      box-shadow: 2px 2px 4px 0px rgba($black, 0.25);
+      box-shadow: $small-shadow;
       background-color: $white;
       color: $primary-color-alt;
       border: 1px solid $primary-color-alt;
