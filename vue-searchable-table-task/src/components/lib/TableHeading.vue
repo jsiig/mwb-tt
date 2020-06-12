@@ -39,19 +39,34 @@ export default {
         box-shadow: $site-shadow;
       }
     }
+
     &:first-child {
-      padding-left: $site-padding-horizontal / 2;
+      padding-left: $site-padding-horizontal / 8;
     }
 
     &:last-child {
       text-align: right;
-      padding-right: $site-padding-horizontal / 2;
+      padding-right: $site-padding-horizontal / 8;
+    }
+
+    @include breakpoint('min-width', $breakpoint-small) {
+      &:first-child {
+        padding-left: $site-padding-horizontal / 2;
+      }
+
+      &:last-child {
+        padding-right: $site-padding-horizontal / 2;
+      }
     }
   }
 
   .th-inner {
-    padding: 8px;
     width: 100%;
     height: 100%;
+    padding: 4px;
+
+    @include breakpoint('min-width', $breakpoint-small) {
+      padding: 8px;
+    }
   }
 </style>

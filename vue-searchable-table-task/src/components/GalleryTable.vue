@@ -57,6 +57,7 @@
         </tr>
       </TableBody>
     </Table>
+    <CurrentlyVisible :current="displayablePhotos.length" :found="displayableAllPhotos.length" :total="photos.length" ></CurrentlyVisible>
   </div>
 </template>
 
@@ -72,6 +73,7 @@ import FilterListItem from './lib/FilterListItem'
 import FilterDropdown from './lib/FilterDropdown'
 import SortButton from './lib/SortButton'
 import SearchBox from './lib/SearchBox'
+import CurrentlyVisible from './lib/CurrentlyVisible'
 
 import debounce from '../lib/debounce'
 
@@ -105,7 +107,8 @@ export default {
     FilterListItem,
     FilterDropdown,
     SortButton,
-    SearchBox
+    SearchBox,
+    CurrentlyVisible
   },
 
   props: {
@@ -322,6 +325,7 @@ export default {
     &__container {
       height: 100%;
       background: $white;
+      padding-bottom: 80px;
       box-shadow: 2px 2px 8px 2px rgba($black, 0.2);
     }
 
@@ -336,7 +340,10 @@ export default {
     }
 
     &__album-id {
-      min-width: 150px;
+      min-width: 100px;
+      @include breakpoint('min-width', $breakpoint-small) {
+        min-width: 150px;
+      }
     }
   }
 </style>

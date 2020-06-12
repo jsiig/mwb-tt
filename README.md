@@ -13,6 +13,14 @@ requirement seriously - also excluding any external libraries
 * Going to extreme lengths to avoid dependencies - only Vue and build tools
 * (Still includes ionicons + google fonts via cdn - needs to look nice)
 
+### Vue app question 2
+You can enable it using
+```js
+    Vue.config.devtools = true
+```
+(done in `/vue-searchable-table-task/src/main.js`)
+
+
 ### Running:
 ```bash
 cd vue-searchable-table-task
@@ -44,3 +52,7 @@ purpose-built tools
 `vuex` would reduce the size and complexity of the main components considerably and allow
 for easier composition, as much of the logic would reside on that side
 
+### Potential future improvements
+
+* Add some actually useful tests
+* 

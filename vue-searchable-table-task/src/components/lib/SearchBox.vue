@@ -66,6 +66,7 @@ export default {
       outline: none;
       font-size: $font-size;
       flex: 1 0 auto;
+      width: calc(100% - 30px);
     }
 
     input:focus, &--has-content input {

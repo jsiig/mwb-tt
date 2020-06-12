@@ -21,7 +21,11 @@ export default {
 
 <style lang="scss" scoped>
   img {
-    width: 75px;
-    height: 75px;
+    width: 50px;
+    height: 50px;
+    @include breakpoint('min-width', $breakpoint-small) {
+      width: 75px;
+      height: 75px;
+    }
   }
 </style>
