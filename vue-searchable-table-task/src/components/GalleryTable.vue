@@ -138,7 +138,7 @@ export default {
       },
 
       // Not the correct way of doing things, but works (methods inside `data()`)
-      debouncedScrollHandler: debounce(this.scrollHandler),
+      debouncedScrollHandler: debounce(this.scrollHandler, 200),
       debouncedSetPhotos: debounce(this.setPhotos, 100)
     }
   },
