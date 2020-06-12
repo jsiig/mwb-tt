@@ -18,8 +18,9 @@ You can enable it using
 ```js
     Vue.config.devtools = true
 ```
-(done in `/vue-searchable-table-task/src/main.js`)
+(done in `./vue-searchable-table-task/src/main.js`)
 
+Visible at http://mwb.test-tasks.siig.ee/ (production build)
 
 ### Running:
 ```bash
@@ -34,6 +35,15 @@ cd vue-searchable-table-task
 yarn install
 yarn run build
 ```
+Outputs to `./vue-searchable-table-task/dist/` folder.
+
+### Running tests
+```bash
+cd vue-searchable-table-task
+yarn install
+yarn run test
+```
+
 
 
 ### Normally I would...
@@ -54,4 +64,3 @@ for easier composition, as much of the logic would reside on that side
 
 ### Potential future improvements
 * Add some useful tests
-
