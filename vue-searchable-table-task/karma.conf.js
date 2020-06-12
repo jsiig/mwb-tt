@@ -1,4 +1,5 @@
 var webpackConfig = require('./node_modules/@vue/cli-service/webpack.config.js')
+process.env.CHROME_BIN = require('puppeteer').executablePath()
 
 module.exports = function(config) {
   config.set({
@@ -14,6 +15,13 @@ module.exports = function(config) {
 
     reporters: ['spec'],
 
-    browsers: ['Chrome']
+    client: {
+      captureConsole: true,
+      mocha: {
+        bail: true
+      }
+    },
+
+    browsers: ['ChromeHeadless']
   })
 }
