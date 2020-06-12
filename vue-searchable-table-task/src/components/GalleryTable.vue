@@ -17,6 +17,7 @@
           :filter="filter"
           @toggle="toggleFilter(filter)"
         />
+        <span v-if="enabledAlbumFilters.length > 5">...and {{enabledAlbumFilters.length - displayedEnabledAlbumFilters.length}} more...</span>
       </FilterList>
     </div>
 

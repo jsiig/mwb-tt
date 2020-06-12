@@ -9,8 +9,8 @@ I answered ES6 questions in Markdown.
 
 ## Vue app
 * Using NO dependencies other than vue itself - taking that VanillaJS and no frameworks 
-requirement seriously
-* Going to extreme lengths to avoid dependencies - only Vue and build tools and fonts+icons
+requirement seriously - also excluding any external libraries
+* Going to extreme lengths to avoid dependencies - only Vue and build tools
 * (Still includes ionicons + google fonts via cdn - needs to look nice)
 
 ### Running:
@@ -40,7 +40,7 @@ purpose-built tools
 
 ### Usually I already...
 * write my own SCSS from scratch
-* follow the same general Vue approaches (component composition) - however using 
-`vuex` would reduce the size and complexity of the main components considerably and
-allow for easier composition, as much of the logic would reside on that side
+* follow the same general Vue approaches (similar component composition) - however using 
+`vuex` would reduce the size and complexity of the main components considerably and allow
+for easier composition, as much of the logic would reside on that side
 
