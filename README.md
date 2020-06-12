@@ -54,5 +54,5 @@ for easier composition, as much of the logic would reside on that side
 
 ### Potential future improvements
 
-* Add some actually useful tests
-* 
+* Add some useful tests
+
