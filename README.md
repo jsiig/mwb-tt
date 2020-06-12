@@ -9,9 +9,9 @@ I answered ES6 questions in Markdown.
 
 ## Vue app
 * Using NO dependencies other than vue itself - taking that VanillaJS and no frameworks 
-requirement seriously - also excluding any external libraries
-* Going to extreme lengths to avoid dependencies - only Vue and build tools
-* (Still includes ionicons + google fonts via cdn - needs to look nice)
+requirement seriously - also excluding any external libraries - going to extreme lengths
+to avoid dependencies
+* (Still includes ionicons + google fonts via cdn - want it to look nice)
 
 ### Vue app question 2
 You can enable it using
@@ -53,6 +53,5 @@ purpose-built tools
 for easier composition, as much of the logic would reside on that side
 
 ### Potential future improvements
-
 * Add some useful tests
 
