@@ -27,6 +27,7 @@ export default {
 
     ascending () {
       if (!this.enabled) return true
+
       return this.sorting.direction === 'ASC'
     }
   }

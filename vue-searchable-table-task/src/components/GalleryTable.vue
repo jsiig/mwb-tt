@@ -1,12 +1,22 @@
 <template>
   <div class="gallery-table__container">
     <div class="gallery-table__filter-area">
-      Filters:
-      <FilterList>
-        <FilterListItem v-for="(filter, index) in query.filters"
+      <FilterDropdown>
+        <template slot="dropdown-text">Select photo albums</template>
+
+        <FilterListItem v-for="(filter, index) in query.albumFilters"
           :key="index"
           :filter="filter"
-          @remove="removeFilter(index)"/>
+          @toggle="toggleFilter(filter)"
+        />
+      </FilterDropdown>
+
+      <FilterList>
+        <FilterListItem v-for="(filter, index) in displayedEnabledAlbumFilters"
+          :key="index"
+          :filter="filter"
+          @toggle="toggleFilter(filter)"
+        />
       </FilterList>
     </div>
 
@@ -57,8 +67,9 @@ import TableRow from './lib/TableRow'
 import TableHeading from './lib/TableHeading'
 import Thumbnail from './lib/Thumbnail'
 
-import FilterListItem from './lib/FilterListItem'
 import FilterList from './lib/FilterList'
+import FilterListItem from './lib/FilterListItem'
+import FilterDropdown from './lib/FilterDropdown'
 import SortButton from './lib/SortButton'
 import SearchBox from './lib/SearchBox'
 
@@ -91,14 +102,19 @@ export default {
     TableRow,
     TableHeading,
     Thumbnail,
-    FilterListItem,
     FilterList,
+    FilterListItem,
+    FilterDropdown,
     SortButton,
     SearchBox
   },
 
   props: {
     photos: {
+      type: Array,
+      required: true
+    },
+    albums: {
       type: Array,
       required: true
     }
@@ -109,7 +125,7 @@ export default {
       displayableAllPhotos: [],
       query: {
         limit: INITIAL_COUNT,
-        filters: [],
+        albumFilters: [],
         sorting: {
           ...SORTING_DEFAULTS
         },
@@ -118,6 +134,7 @@ export default {
           title: ''
         }
       },
+
       // Not the correct way of doing things, but works (methods inside `data()`)
       debouncedScrollHandler: debounce(this.scrollHandler),
       debouncedSetPhotos: debounce(this.setPhotos, 100)
@@ -127,6 +144,12 @@ export default {
   computed: {
     displayablePhotos () {
       return this.limit(this.displayableAllPhotos)
+    },
+    enabledAlbumFilters () {
+      return this.query.albumFilters.filter(filter => filter.enabled)
+    },
+    displayedEnabledAlbumFilters () {
+      return this.enabledAlbumFilters.slice(0, 5)
     }
   },
 
@@ -140,6 +163,13 @@ export default {
 
   mounted () {
     this.setPhotos()
+
+    this.query.albumFilters = this.albums.slice().map(album => {
+      return {
+        ...album,
+        enabled: false
+      }
+    })
   },
 
   methods: {
@@ -154,8 +184,9 @@ export default {
       }
 
       // Only sort if these are not defaults already
-      // This is sort of iffy, should the response from the
-      // API change at any point
+      // This is not reliable as should the response order from the
+      // API change at any point, this will break
+      // Speed optimisation for now.
       if (
         query.sorting.column !== SORTING_DEFAULTS.column ||
         query.sorting.direction !== SORTING_DEFAULTS.direction
@@ -163,7 +194,14 @@ export default {
         photos = this.sort(photos)
       }
 
+      if (this.enabledAlbumFilters.length) {
+        photos = this.filter(photos)
+      }
+
+      // Assign to data property
       this.displayableAllPhotos = photos
+
+      // Reset to 25 items on changes
       this.resetSize()
     },
 
@@ -172,8 +210,10 @@ export default {
     },
 
     search (photos) {
-      Object.keys(this.query.search).forEach(key => {
-        const term = this.query.search[key].trim().toLowerCase()
+      const { search } = this.query
+
+      Object.keys(search).forEach(key => {
+        const term = search[key].trim().toLowerCase()
 
         if (term.length) {
           photos = photos.filter(photo => {
@@ -200,8 +240,13 @@ export default {
       })
     },
 
-    scrollHandler (event) {
-      console.log(event)
+    filter (photos) {
+      const { albumFilters } = this.query
+      const albumIds = albumFilters.filter(filter => filter.enabled).map(filter => filter.id)
+      return photos.filter(photo => albumIds.includes(photo.albumId))
+    },
+
+    scrollHandler () {
       const { body, documentElement } = document
       const { scrollTop } = documentElement
 
@@ -244,6 +289,12 @@ export default {
       }
 
       this.setPhotos()
+    },
+
+    toggleFilter (filter) {
+      filter.enabled = !filter.enabled
+
+      this.setPhotos()
     }
   },
 
@@ -252,12 +303,16 @@ export default {
       if (newValue.length) this.setPhotos()
     },
 
-    'query.search.title' (newValue) {
+    'query.search.title' () {
       this.debouncedSetPhotos()
     },
 
-    'query.search.albumTitle' (newValue) {
+    'query.search.albumTitle' () {
       this.debouncedSetPhotos()
+    },
+
+    'query.albumFilters' () {
+      this.setPhotos()
     }
   }
 }

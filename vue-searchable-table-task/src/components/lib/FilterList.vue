@@ -10,9 +10,10 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
   .filter-list {
     list-style: none;
-    margin: 0;
+    display: inline;
+    padding-left: 10px;
   }
 </style>

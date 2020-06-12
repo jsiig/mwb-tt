@@ -7,7 +7,7 @@
     <section class="app__main">
       <transition name="main-screen" mode="out-in">
         <LoadingScreen v-if="loading"></LoadingScreen>
-        <GalleryTable v-else-if="!loading && !error" :photos="photosJoinAlbums" />
+        <GalleryTable v-else-if="!loading && !error" :photos="photosJoinAlbums" :albums="albums" />
         <ErrorScreen @retry="fetchData" v-else>{{error}}</ErrorScreen>
       </transition>
     </section>
@@ -109,6 +109,7 @@ html, body {
     flex-flow: row wrap;
     justify-content: space-between;
   }
+
   &__main { flex: 1 0 auto; }
 }
 

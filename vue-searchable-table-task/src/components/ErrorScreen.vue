@@ -7,7 +7,9 @@
 </template>
 
 <script>
-
+export default {
+  name: 'ErrorScreen'
+}
 </script>
 
 <style lang="scss" scoped>
