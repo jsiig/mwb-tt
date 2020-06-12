@@ -23,7 +23,7 @@
 
     <Table class="gallery-table">
       <thead class="gallery-table__header">
-        <TableRow>
+        <tr>
           <TableHeading class="gallery-table__album-id">
             Album ID
             <SortButton @toggleSorting="toggleSorting" :sorting="query.sorting" column="albumId"></SortButton>
@@ -42,11 +42,11 @@
           </TableHeading>
 
           <TableHeading class="gallery-table__thumbnail">Thumbnail</TableHeading>
-        </TableRow>
+        </tr>
       </thead>
 
       <TableBody class="gallery-table__body">
-        <TableRow v-for="(photo) in displayablePhotos" :key="photo.id">
+        <tr v-for="(photo) in displayablePhotos" :key="photo.id">
           <TableCell>{{photo.albumId}}</TableCell>
 
           <TableCell>{{photo.albumTitle}}</TableCell>
@@ -54,7 +54,7 @@
           <TableCell>{{photo.title}}</TableCell>
 
           <TableCell><Thumbnail :src="photo.thumbnailUrl" :alt="`Thumbnail: ${photo.title}`" /></TableCell>
-        </TableRow>
+        </tr>
       </TableBody>
     </Table>
   </div>
@@ -64,7 +64,6 @@
 import Table from './lib/Table'
 import TableBody from './lib/TableBody'
 import TableCell from './lib/TableCell'
-import TableRow from './lib/TableRow'
 import TableHeading from './lib/TableHeading'
 import Thumbnail from './lib/Thumbnail'
 
@@ -100,7 +99,6 @@ export default {
     Table,
     TableBody,
     TableCell,
-    TableRow,
     TableHeading,
     Thumbnail,
     FilterList,
@@ -275,7 +273,7 @@ export default {
     },
 
     resetSize () {
-      document.body.scrollTop = 0
+      window.scrollTo(0, 0)
       this.query.limit = INITIAL_COUNT
     },
 
