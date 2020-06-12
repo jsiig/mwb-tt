@@ -66,6 +66,7 @@ export default {
       try {
         this.albums = await api.albums()
         this.photos = await api.photos()
+        this.error = null
       } catch (e) {
         this.error = 'Something went a bit wrong with the request.'
       } finally {
